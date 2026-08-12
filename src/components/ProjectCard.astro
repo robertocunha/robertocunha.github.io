@@ -1,0 +1,98 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+	project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+
+const linkTypes = {
+	demo: 'Experimente!',
+	repo: 'GitHub',
+	screenshots: 'Screen shots',
+	article: 'Artigo Completo',
+	summary: 'Resumo',
+	video: 'Vídeo',
+	audio: 'Ouvir',
+	score: 'Partitura',
+};
+---
+
+<article class="card">
+	<header class="card-header">
+		<div class="identity">
+			<span class="area">{project.data.area}</span>
+			<h2>{project.data.title}</h2>
+		</div>
+
+		<nav class="links">
+			{project.data.links.map((link) => (
+				<a href={link.url}>
+					{linkTypes[link.type]}
+				</a>
+			))}
+		</nav>
+	</header>
+
+	<p class="short-description">{project.data.shortDescription}</p>
+
+	<ul class="technologies">
+		{project.data.technologies.map((technology) => (
+			<li>{technology}</li>
+		))}
+	</ul>
+</article>
+
+<style>
+	.card {
+		max-width: 700px;
+		margin: 1rem auto;
+		padding: 1.25rem;
+		border: 1px solid #ccc;
+		border-radius: 8px;
+	}
+
+	.card-header {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.identity {
+		display: flex;
+		align-items: baseline;
+		gap: 0.6rem;
+	}
+
+	.area {
+		font-size: 0.8rem;
+		text-transform: uppercase;
+	}
+
+	h2 {
+		margin: 0;
+	}
+
+	.short-description {
+		margin: 0.75rem 0;
+	}
+
+	.technologies {
+		display: flex;
+		gap: 0.5rem;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		font-size: 0.85rem;
+	}
+
+	.links {
+		display: flex;
+		gap: 0.75rem;
+	}
+
+	.links a {
+		text-decoration: none;
+	}
+</style>
