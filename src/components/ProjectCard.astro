@@ -10,13 +10,13 @@ const { project } = Astro.props;
 
 const areas = {
 	software: {
-		label: "Software",
+		label: 'Software',
 	},
 	article: {
-		label: "Artigo",
+		label: 'Artigo',
 	},
 	music: {
-		label: "Música",
+		label: 'Música',
 	},
 };
 
@@ -54,6 +54,18 @@ const linkTypes = {
 		label: "Partitura",
 	},
 };
+
+// Quando o projeto é do tipo "article" e tem um artigo correspondente
+// hospedado no próprio site (via articleSlug), montamos o link de
+// leitura como uma rota interna, em vez de depender de uma URL externa
+// na lista `links` do frontmatter.
+const internalArticleLink = project.data.articleSlug
+	? { type: "article" as const, url: `/artigos/${project.data.articleSlug}` }
+	: null;
+
+const allLinks = internalArticleLink
+	? [internalArticleLink, ...project.data.links]
+	: project.data.links;
 ---
 
 <article class="card">
@@ -68,7 +80,7 @@ const linkTypes = {
 
 		<nav class="links">
 			{
-				project.data.links.map((link) => (
+				allLinks.map((link) => (
 					<a href={link.url}>
 						<span aria-hidden="true">
 							{linkTypes[link.type].icon}
@@ -111,12 +123,6 @@ const linkTypes = {
 	.area {
 		font-size: 0.8rem;
 		text-transform: uppercase;
-	}
-
-	.area-icon {
-		width: 1rem;
-		height: 1rem;
-		flex-shrink: 0;
 	}
 
 	h2 {

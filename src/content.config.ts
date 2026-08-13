@@ -28,7 +28,21 @@ const projects = defineCollection({
         url: z.string().url(),
       }),
     ),
+    // Preenchido apenas quando area === 'article': liga este projeto
+    // à entrada correspondente na collection `articles`, hospedada
+    // no próprio site em /artigos/[slug].
+    articleSlug: z.string().optional(),
   }),
 });
 
-export const collections = { projects };
+const articles = defineCollection({
+  loader: glob({
+    pattern: '**/*.md',
+    base: './src/content/articles',
+  }),
+  schema: z.object({
+    title: z.string(),
+  }),
+});
+
+export const collections = { projects, articles };
