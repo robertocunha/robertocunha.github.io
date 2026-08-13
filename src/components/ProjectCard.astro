@@ -1,46 +1,91 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import type { CollectionEntry } from "astro:content";
 
 interface Props {
-	project: CollectionEntry<'projects'>;
+	project: CollectionEntry<"projects">;
 }
 
 const { project } = Astro.props;
 
+const areas = {
+	software: {
+		icon: '▣',
+		label: 'Software',
+	},
+	article: {
+		icon: '▤',
+		label: 'Artigo',
+	},
+	music: {
+		icon: '♫',
+		label: 'Música',
+	},
+};
+
 const linkTypes = {
-	demo: 'Experimente!',
-	repo: 'GitHub',
-	screenshots: 'Screen shots',
-	article: 'Artigo Completo',
-	summary: 'Resumo',
-	video: 'Vídeo',
-	audio: 'Ouvir',
-	score: 'Partitura',
+	demo: {
+		icon: "↗",
+		label: "Experimente!",
+	},
+	repo: {
+		icon: "◇",
+		label: "GitHub",
+	},
+	screenshots: {
+		icon: "▧",
+		label: "Screen shots",
+	},
+	article: {
+		icon: "▤",
+		label: "Artigo Completo",
+	},
+	summary: {
+		icon: "≡",
+		label: "Resumo",
+	},
+	video: {
+		icon: "▶",
+		label: "Vídeo",
+	},
+	audio: {
+		icon: "♫",
+		label: "Ouvir",
+	},
+	score: {
+		icon: "♬",
+		label: "Partitura",
+	},
 };
 ---
 
 <article class="card">
 	<header class="card-header">
 		<div class="identity">
-			<span class="area">{project.data.area}</span>
+			<span class="area">
+				{areas[project.data.area].icon}
+				{project.data.area}
+			</span>
 			<h2>{project.data.title}</h2>
 		</div>
 
 		<nav class="links">
-			{project.data.links.map((link) => (
-				<a href={link.url}>
-					{linkTypes[link.type]}
-				</a>
-			))}
+			{
+				project.data.links.map((link) => (
+					<a href={link.url}>
+						<span aria-hidden="true">
+							{linkTypes[link.type].icon}
+						</span>
+						{linkTypes[link.type].label}
+					</a>
+				))
+			}
 		</nav>
 	</header>
 
 	<p class="short-description">{project.data.shortDescription}</p>
 
 	<ul class="technologies">
-		{project.data.technologies.map((technology) => (
-			<li>{technology}</li>
-		))}
+		{project.data.technologies.map((technology) => <li>{technology}</li>)}
 	</ul>
 </article>
 
