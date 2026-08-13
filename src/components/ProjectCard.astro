@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import AreaIcon from "./AreaIcon.astro";
 
 interface Props {
 	project: CollectionEntry<"projects">;
@@ -9,16 +10,13 @@ const { project } = Astro.props;
 
 const areas = {
 	software: {
-		icon: '▣',
-		label: 'Software',
+		label: "Software",
 	},
 	article: {
-		icon: '▤',
-		label: 'Artigo',
+		label: "Artigo",
 	},
 	music: {
-		icon: '♫',
-		label: 'Música',
+		label: "Música",
 	},
 };
 
@@ -62,8 +60,8 @@ const linkTypes = {
 	<header class="card-header">
 		<div class="identity">
 			<span class="area">
-				{areas[project.data.area].icon}
-				{project.data.area}
+				<AreaIcon area={project.data.area} />
+				{areas[project.data.area].label}
 			</span>
 			<h2>{project.data.title}</h2>
 		</div>
@@ -113,6 +111,12 @@ const linkTypes = {
 	.area {
 		font-size: 0.8rem;
 		text-transform: uppercase;
+	}
+
+	.area-icon {
+		width: 1rem;
+		height: 1rem;
+		flex-shrink: 0;
 	}
 
 	h2 {
