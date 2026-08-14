@@ -2,10 +2,20 @@
 import { getCollection } from 'astro:content';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { useTranslations } from '../../i18n/utils';
+import { SITE_URL, SOCIAL_LINKS } from '../../consts';
 
 const lang = 'en' as const;
 const t = useTranslations(lang);
 const projects = await getCollection('projects');
+
+const personLd = {
+	'@context': 'https://schema.org',
+	'@type': 'Person',
+	name: 'Roberto Cunha',
+	description: t('home.intro'),
+	url: SITE_URL,
+	sameAs: SOCIAL_LINKS,
+};
 ---
 
 <html lang="en">
@@ -13,6 +23,19 @@ const projects = await getCollection('projects');
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<title>Roberto Cunha</title>
+		<meta name="description" content={t('home.intro')} />
+
+		<link rel="canonical" href={`${SITE_URL}/en/`} />
+		<link rel="alternate" hreflang="pt-BR" href={`${SITE_URL}/`} />
+		<link rel="alternate" hreflang="en" href={`${SITE_URL}/en/`} />
+		<link rel="alternate" hreflang="x-default" href={`${SITE_URL}/`} />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="Roberto Cunha" />
+		<meta property="og:description" content={t('home.intro')} />
+		<meta property="og:url" content={`${SITE_URL}/en/`} />
+
+		<script type="application/ld+json" set:html={JSON.stringify(personLd)} />
 	</head>
 
 	<body>
@@ -20,7 +43,10 @@ const projects = await getCollection('projects');
 			<a href="/">Português</a>
 		</nav>
 
-		<h1>{t('home.title')}</h1>
+		<h1>Roberto Cunha</h1>
+		<p class="intro">{t('home.intro')}</p>
+
+		<h2>{t('home.title')}</h2>
 
 		{projects.map((project) => (
 			<ProjectCard project={project} lang={lang} />

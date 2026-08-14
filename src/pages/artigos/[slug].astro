@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import { useTranslations } from '../../i18n/utils';
+import { SITE_URL } from '../../consts';
 
 export async function getStaticPaths() {
 	const articles = await getCollection('articles', (entry) =>
@@ -14,8 +15,27 @@ export async function getStaticPaths() {
 }
 
 const { article } = Astro.props;
+const { slug } = Astro.params;
 const { Content } = await render(article);
 const t = useTranslations('pt');
+
+const pageUrl = `${SITE_URL}/artigos/${slug}`;
+const alternateUrl = `${SITE_URL}/en/artigos/${slug}`;
+const description = `${article.data.title} — ${t('article.by')}`;
+
+const articleLd = {
+	'@context': 'https://schema.org',
+	'@type': 'Article',
+	headline: article.data.title,
+	description,
+	url: pageUrl,
+	inLanguage: 'pt-BR',
+	author: {
+		'@type': 'Person',
+		name: 'Roberto Cunha',
+		url: SITE_URL,
+	},
+};
 ---
 
 <html lang="pt-BR">
@@ -23,10 +43,26 @@ const t = useTranslations('pt');
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<title>{article.data.title} — Roberto Cunha</title>
+		<meta name="description" content={description} />
+
+		<link rel="canonical" href={pageUrl} />
+		<link rel="alternate" hreflang="pt-BR" href={pageUrl} />
+		<link rel="alternate" hreflang="en" href={alternateUrl} />
+		<link rel="alternate" hreflang="x-default" href={pageUrl} />
+
+		<meta property="og:type" content="article" />
+		<meta property="og:title" content={article.data.title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={pageUrl} />
+
+		<script type="application/ld+json" set:html={JSON.stringify(articleLd)} />
 	</head>
 
 	<body>
-		<a href="/">{t('nav.back')}</a>
+		<nav>
+			<a href="/">{t('nav.back')}</a>
+			<a href={`/en/artigos/${slug}`}>English</a>
+		</nav>
 
 		<article class="article-body">
 			<Content />

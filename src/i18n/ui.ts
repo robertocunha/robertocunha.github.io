@@ -8,7 +8,10 @@ export const defaultLang = 'pt';
 export const ui = {
 	pt: {
 		'home.title': 'Projetos',
+		'home.intro':
+			'Desenvolvedor, músico e educador em São Paulo. Este espaço reúne trabalhos em software, música e escrita, publicados à medida que amadurecem.',
 		'nav.back': '← Voltar',
+		'article.by': 'Um texto de Roberto Cunha.',
 		'area.software': 'Software',
 		'area.article': 'Artigo',
 		'area.music': 'Música',
@@ -23,7 +26,10 @@ export const ui = {
 	},
 	en: {
 		'home.title': 'Projects',
+		'home.intro':
+			'Developer, musician, and educator based in São Paulo. This space gathers work in software, music, and writing, published as each piece matures.',
 		'nav.back': '← Back',
+		'article.by': 'A piece by Roberto Cunha.',
 		'area.software': 'Software',
 		'area.article': 'Article',
 		'area.music': 'Music',
