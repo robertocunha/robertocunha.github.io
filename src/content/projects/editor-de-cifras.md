@@ -1,10 +1,21 @@
 ---
-title: Siga La Cifra!
-shortDescription: Editor de letras de música cifradas.
-description: >
-  Um editor web para criar, editar e organizar letras de músicas
-  com cifras, permitindo trabalhar com acordes e formatação
-  diretamente no navegador.
+title:
+  pt: Siga La Cifra!
+  en: Siga La Cifra!
+
+shortDescription:
+  pt: Editor de letras de música cifradas.
+  en: A chord-sheet editor for song lyrics.
+
+description:
+  pt: >
+    Um editor web para criar, editar e organizar letras de músicas
+    com cifras, permitindo trabalhar com acordes e formatação
+    diretamente no navegador.
+  en: >
+    A web editor for creating, editing, and organizing chord sheets,
+    allowing chords and formatting to be worked on directly in the
+    browser.
 
 area: software
 

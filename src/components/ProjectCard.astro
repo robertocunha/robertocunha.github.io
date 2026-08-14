@@ -1,66 +1,43 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import AreaIcon from "./AreaIcon.astro";
+import { useTranslations, type Lang } from "../i18n/utils";
 
 interface Props {
 	project: CollectionEntry<"projects">;
+	lang: Lang;
 }
 
-const { project } = Astro.props;
+const { project, lang } = Astro.props;
+const t = useTranslations(lang);
 
-const areas = {
-	software: {
-		label: 'Software',
-	},
-	article: {
-		label: 'Artigo',
-	},
-	music: {
-		label: 'Música',
-	},
+const areaLabels = {
+	software: t("area.software"),
+	article: t("area.article"),
+	music: t("area.music"),
 };
 
-const linkTypes = {
-	demo: {
-		icon: "↗",
-		label: "Experimente!",
-	},
-	repo: {
-		icon: "◇",
-		label: "GitHub",
-	},
-	screenshots: {
-		icon: "▧",
-		label: "Screen shots",
-	},
-	article: {
-		icon: "▤",
-		label: "Artigo Completo",
-	},
-	summary: {
-		icon: "≡",
-		label: "Resumo",
-	},
-	video: {
-		icon: "▶",
-		label: "Vídeo",
-	},
-	audio: {
-		icon: "♫",
-		label: "Ouvir",
-	},
-	score: {
-		icon: "♬",
-		label: "Partitura",
-	},
+const linkMeta = {
+	demo: { icon: "↗", label: t("link.demo") },
+	repo: { icon: "◇", label: t("link.repo") },
+	screenshots: { icon: "▧", label: t("link.screenshots") },
+	article: { icon: "▤", label: t("link.article") },
+	summary: { icon: "≡", label: t("link.summary") },
+	video: { icon: "▶", label: t("link.video") },
+	audio: { icon: "♫", label: t("link.audio") },
+	score: { icon: "♬", label: t("link.score") },
 };
 
-// Quando o projeto é do tipo "article" e tem um artigo correspondente
-// hospedado no próprio site (via articleSlug), montamos o link de
-// leitura como uma rota interna, em vez de depender de uma URL externa
-// na lista `links` do frontmatter.
-const internalArticleLink = project.data.articleSlug
-	? { type: "article" as const, url: `/artigos/${project.data.articleSlug}` }
+// Link interno do artigo, respeitando o prefixo de idioma da rota
+// (pt: /artigos/slug — en: /en/artigos/slug).
+const articleHref = project.data.articleSlug
+	? lang === "en"
+		? `/en/artigos/${project.data.articleSlug}`
+		: `/artigos/${project.data.articleSlug}`
+	: null;
+
+const internalArticleLink = articleHref
+	? { type: "article" as const, url: articleHref }
 	: null;
 
 const allLinks = internalArticleLink
@@ -73,9 +50,9 @@ const allLinks = internalArticleLink
 		<div class="identity">
 			<span class="area">
 				<AreaIcon area={project.data.area} />
-				{areas[project.data.area].label}
+				{areaLabels[project.data.area]}
 			</span>
-			<h2>{project.data.title}</h2>
+			<h2>{project.data.title[lang]}</h2>
 		</div>
 
 		<nav class="links">
@@ -83,16 +60,16 @@ const allLinks = internalArticleLink
 				allLinks.map((link) => (
 					<a href={link.url}>
 						<span aria-hidden="true">
-							{linkTypes[link.type].icon}
+							{linkMeta[link.type].icon}
 						</span>
-						{linkTypes[link.type].label}
+						{linkMeta[link.type].label}
 					</a>
 				))
 			}
 		</nav>
 	</header>
 
-	<p class="short-description">{project.data.shortDescription}</p>
+	<p class="short-description">{project.data.shortDescription[lang]}</p>
 
 	<ul class="technologies">
 		{project.data.technologies.map((technology) => <li>{technology}</li>)}

@@ -1,14 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
-import ProjectCard from '../components/ProjectCard.astro';
-import { useTranslations } from '../i18n/utils';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { useTranslations } from '../../i18n/utils';
 
-const lang = 'pt' as const;
+const lang = 'en' as const;
 const t = useTranslations(lang);
 const projects = await getCollection('projects');
 ---
 
-<html lang="pt-BR">
+<html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
@@ -17,7 +17,7 @@ const projects = await getCollection('projects');
 
 	<body>
 		<nav>
-			<a href="/en/">English</a>
+			<a href="/">Português</a>
 		</nav>
 
 		<h1>{t('home.title')}</h1>
