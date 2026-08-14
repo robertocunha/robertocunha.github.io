@@ -12,9 +12,7 @@ area: article
 
 technologies: []
 
-links:
-  - type: audio
-    url: https://eellison.bandcamp.com/album/pillars
+links: []
 
 articleSlug: pillars-e-ellison
 ---
