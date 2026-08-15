@@ -1,0 +1,44 @@
+name: Deploy to GitHub Pages
+
+on:
+  # Roda a cada push na branch main
+  push:
+    branches: [main]
+  # Permite rodar manualmente pela aba Actions no GitHub, se precisar
+  workflow_dispatch:
+
+# Permissões mínimas necessárias para publicar no GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Evita builds concorrentes; deixa o mais recente terminar,
+# cancelando os que ficaram no meio do caminho
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install, build, and upload your site
+        uses: withastro/action@v3
+        # Por padrão usa Node 22, npm, e o diretório raiz do repo.
+        # Ajuste aqui se o projeto usar outra versão de Node ou
+        # outro gerenciador de pacotes (pnpm, yarn).
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
