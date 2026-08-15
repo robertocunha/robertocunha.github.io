@@ -17,7 +17,7 @@ description:
     allowing chords and formatting to be worked on directly in the
     browser.
 
-area: software
+area: music
 
 technologies:
   - TypeScript

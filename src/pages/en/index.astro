@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { useTranslations } from '../../i18n/utils';
 import { SITE_URL, SOCIAL_LINKS } from '../../consts';
@@ -7,6 +8,10 @@ import { SITE_URL, SOCIAL_LINKS } from '../../consts';
 const lang = 'en' as const;
 const t = useTranslations(lang);
 const projects = await getCollection('projects');
+
+const bySoftware = projects.filter((p) => p.data.area === 'software');
+const byArticle = projects.filter((p) => p.data.area === 'article');
+const byMusic = projects.filter((p) => p.data.area === 'music');
 
 const personLd = {
 	'@context': 'https://schema.org',
@@ -18,38 +23,81 @@ const personLd = {
 };
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<title>Roberto Cunha</title>
-		<meta name="description" content={t('home.intro')} />
-
-		<link rel="canonical" href={`${SITE_URL}/en/`} />
-		<link rel="alternate" hreflang="pt-BR" href={`${SITE_URL}/`} />
-		<link rel="alternate" hreflang="en" href={`${SITE_URL}/en/`} />
-		<link rel="alternate" hreflang="x-default" href={`${SITE_URL}/`} />
-
-		<meta property="og:type" content="website" />
-		<meta property="og:title" content="Roberto Cunha" />
-		<meta property="og:description" content={t('home.intro')} />
-		<meta property="og:url" content={`${SITE_URL}/en/`} />
-
-		<script type="application/ld+json" set:html={JSON.stringify(personLd)} />
-	</head>
-
-	<body>
-		<nav>
-			<a href="/">Português</a>
+<Base
+	lang={lang}
+	title="Roberto Cunha"
+	description={t('home.intro')}
+	path="/en/"
+	alternates={{ pt: '/', en: '/en/' }}
+	structuredData={personLd}
+	wide
+>
+	<div class="page-inner">
+		<nav class="site-nav">
+			<a href="/" class="lang-switch">🇧🇷 Português</a>
 		</nav>
 
-		<h1>Roberto Cunha</h1>
-		<p class="intro">{t('home.intro')}</p>
+		<header class="hero">
+			<h1>Roberto Cunha</h1>
+			<p class="intro">{t('home.intro')}</p>
+		</header>
 
-		<h2>{t('home.title')}</h2>
+		<div class="ruled-line"></div>
+	</div>
 
-		{projects.map((project) => (
-			<ProjectCard project={project} lang={lang} />
-		))}
-	</body>
-</html>
+	<nav class="area-jump" aria-label="Areas">
+		{bySoftware.length > 0 && (
+			<a href="#area-software" data-area="software">{t('section.software')}</a>
+		)}
+		{byArticle.length > 0 && (
+			<a href="#area-article" data-area="article">{t('section.article')}</a>
+		)}
+		{byMusic.length > 0 && (
+			<a href="#area-music" data-area="music">{t('section.music')}</a>
+		)}
+	</nav>
+
+	<div class="areas">
+		{
+			bySoftware.length > 0 && (
+				<section class="area-section" data-area="software" id="area-software">
+					<h2>{t('section.software')}</h2>
+					<div class="ruled-line ruled-line--small" />
+					<div class="card-grid">
+						{bySoftware.map((project) => (
+							<ProjectCard project={project} lang={lang} />
+						))}
+					</div>
+				</section>
+			)
+		}
+
+		{
+			byArticle.length > 0 && (
+				<section class="area-section" data-area="article" id="area-article">
+					<h2>{t('section.article')}</h2>
+					<div class="ruled-line ruled-line--small" />
+					<div class="card-grid">
+						{byArticle.map((project) => (
+							<ProjectCard project={project} lang={lang} />
+						))}
+					</div>
+				</section>
+			)
+		}
+
+		{
+			byMusic.length > 0 && (
+				<section class="area-section" data-area="music" id="area-music">
+					<h2>{t('section.music')}</h2>
+					<div class="ruled-line ruled-line--small" />
+					<div class="card-grid">
+						{byMusic.map((project) => (
+							<ProjectCard project={project} lang={lang} />
+						))}
+					</div>
+				</section>
+			)
+		}
+	</div>
+</Base>

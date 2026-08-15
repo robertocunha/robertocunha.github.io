@@ -1,0 +1,99 @@
+---
+import '../styles/global.css';
+import { SITE_URL } from '../consts';
+import type { Lang } from '../i18n/utils';
+
+interface Props {
+	/** Idioma da página; define o atributo lang do <html>. */
+	lang: Lang;
+	/** Título completo da página (já formatado, ex: "Artigo — Roberto Cunha"). */
+	title: string;
+	/** Meta description / og:description. Omitida em páginas sem necessidade (ex: 404). */
+	description?: string;
+	/** Caminho da página a partir da raiz do site (ex: '/', '/en/', '/artigos/slug'). */
+	path: string;
+	/**
+	 * Caminhos pt/en equivalentes a esta página, para gerar as tags
+	 * hreflang. Omitido em páginas sem par de idioma (ex: 404).
+	 */
+	alternates?: { pt: string; en: string };
+	/** og:type — 'website' para páginas de índice, 'article' para artigos. */
+	ogType?: 'website' | 'article';
+	/** Objeto JSON-LD a ser injetado como <script type="application/ld+json">. */
+	structuredData?: Record<string, unknown>;
+	/** Marca a página como noindex (ex: 404). */
+	noindex?: boolean;
+	/**
+	 * Exceção de largura: abre o container `.page` além da largura de
+	 * leitura padrão (700px). Usado na home, cujo grid de três áreas
+	 * precisa de mais espaço horizontal do que uma coluna de texto.
+	 */
+	wide?: boolean;
+}
+
+const {
+	lang,
+	title,
+	description,
+	path,
+	alternates,
+	ogType = 'website',
+	structuredData,
+	noindex = false,
+	wide = false,
+} = Astro.props;
+
+const htmlLang = lang === 'en' ? 'en' : 'pt-BR';
+const canonicalUrl = `${SITE_URL}${path}`;
+---
+
+<html lang={htmlLang}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>{title}</title>
+		{description && <meta name="description" content={description} />}
+		{noindex && <meta name="robots" content="noindex" />}
+
+		<link rel="canonical" href={canonicalUrl} />
+		{
+			alternates && (
+				<>
+					<link rel="alternate" hreflang="pt-BR" href={`${SITE_URL}${alternates.pt}`} />
+					<link rel="alternate" hreflang="en" href={`${SITE_URL}${alternates.en}`} />
+					<link rel="alternate" hreflang="x-default" href={`${SITE_URL}${alternates.pt}`} />
+				</>
+			)
+		}
+
+		{
+			description && (
+				<>
+					<meta property="og:type" content={ogType} />
+					<meta property="og:title" content={title} />
+					<meta property="og:description" content={description} />
+					<meta property="og:url" content={canonicalUrl} />
+				</>
+			)
+		}
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+		/>
+
+		{
+			structuredData && (
+				<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+			)
+		}
+	</head>
+
+	<body>
+		<div class:list={["page", wide && "page--wide"]}>
+			<slot />
+		</div>
+	</body>
+</html>

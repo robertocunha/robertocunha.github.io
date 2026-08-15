@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
 import { useTranslations } from '../../../i18n/utils';
 import { SITE_URL } from '../../../consts';
 
@@ -19,16 +20,13 @@ const { slug } = Astro.params;
 const { Content } = await render(article);
 const t = useTranslations('en');
 
-const pageUrl = `${SITE_URL}/en/artigos/${slug}`;
-const alternateUrl = `${SITE_URL}/artigos/${slug}`;
 const description = `${article.data.title} — ${t('article.by')}`;
-
 const articleLd = {
 	'@context': 'https://schema.org',
 	'@type': 'Article',
 	headline: article.data.title,
 	description,
-	url: pageUrl,
+	url: `${SITE_URL}/en/artigos/${slug}`,
 	inLanguage: 'en',
 	author: {
 		'@type': 'Person',
@@ -38,42 +36,21 @@ const articleLd = {
 };
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<title>{article.data.title} — Roberto Cunha</title>
-		<meta name="description" content={description} />
+<Base
+	lang="en"
+	title={`${article.data.title} — Roberto Cunha`}
+	description={description}
+	path={`/en/artigos/${slug}`}
+	alternates={{ pt: `/artigos/${slug}`, en: `/en/artigos/${slug}` }}
+	ogType="article"
+	structuredData={articleLd}
+>
+	<nav class="site-nav">
+		<a href="/en/">{t('nav.back')}</a>
+		<a href={`/artigos/${slug}`} class="lang-switch">🇧🇷 Português</a>
+	</nav>
 
-		<link rel="canonical" href={pageUrl} />
-		<link rel="alternate" hreflang="pt-BR" href={alternateUrl} />
-		<link rel="alternate" hreflang="en" href={pageUrl} />
-		<link rel="alternate" hreflang="x-default" href={alternateUrl} />
-
-		<meta property="og:type" content="article" />
-		<meta property="og:title" content={article.data.title} />
-		<meta property="og:description" content={description} />
-		<meta property="og:url" content={pageUrl} />
-
-		<script type="application/ld+json" set:html={JSON.stringify(articleLd)} />
-	</head>
-
-	<body>
-		<nav>
-			<a href="/en/">{t('nav.back')}</a>
-			<a href={`/artigos/${slug}`}>Português</a>
-		</nav>
-
-		<article class="article-body">
-			<Content />
-		</article>
-	</body>
-</html>
-
-<style>
-	.article-body {
-		max-width: 700px;
-		margin: 1.5rem auto;
-		line-height: 1.6;
-	}
-</style>
+	<article class="article-body">
+		<Content />
+	</article>
+</Base>

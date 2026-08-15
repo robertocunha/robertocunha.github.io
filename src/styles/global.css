@@ -1,0 +1,455 @@
+/* ---------------------------------------------------------------
+   Sitefolio — sistema de design
+   Paleta neutra + um acento por área de conteúdo (software / artigo
+   / música), que colore automaticamente ícone e faixa lateral do
+   card. Tipografia: uma monoespaçada para títulos (eco de código e
+   de cifra), uma sans-serif irmã para o corpo.
+   ------------------------------------------------------------- */
+
+:root {
+	/* Cor */
+	--color-bg: #f5f6f4;
+	--color-bg-raised: #e9eae5; /* levemente mais escuro que --color-bg, pra elementos "elevados" como o menu sticky */
+	--color-surface: #ffffff;
+	--color-text: #17181a;
+	--color-text-muted: #63645f;
+	--color-hairline: #dfe0da;
+
+	--color-accent-software: #3b5ba5; /* índigo — lógica, código */
+	--color-accent-article: #8a6d3b; /* sépia — tinta, papel */
+	--color-accent-music: #7a2e3b; /* bordô — samba, corda, voz */
+
+	/* Tipografia */
+	--font-display: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+	--font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+
+	/* Espaçamento */
+	--space-1: 0.5rem;
+	--space-2: 1rem;
+	--space-3: 1.5rem;
+	--space-4: 2.5rem;
+	--space-5: 4rem;
+
+	--content-width: 700px;
+	/* Exceção de largura: só a home usa isso, pro grid de três
+	   áreas ter espaço de sobra pra respirar lado a lado. */
+	--content-width-wide: 1100px;
+}
+
+/* Reset mínimo */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	color-scheme: light;
+}
+
+body {
+	margin: 0;
+	background: var(--color-bg);
+	color: var(--color-text);
+	font-family: var(--font-body);
+	font-size: 16px;
+	line-height: 1.55;
+	-webkit-font-smoothing: antialiased;
+}
+
+a {
+	color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible {
+	outline: 2px solid var(--color-text);
+	outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------
+   Linha pautada — o elemento de assinatura do site: uma régua fina
+   com marcações, ecoando tanto uma pauta musical quanto uma régua
+   de medição/código. Usada como divisor entre o cabeçalho e o
+   conteúdo, e entre seções de área.
+   ------------------------------------------------------------- */
+.ruled-line {
+	height: 6px;
+	background-image: repeating-linear-gradient(
+		to right,
+		var(--color-hairline) 0,
+		var(--color-hairline) 1px,
+		transparent 1px,
+		transparent 16px
+	);
+	background-position: bottom;
+	background-size: 100% 1px;
+	background-repeat: repeat-x;
+	margin: var(--space-4) 0;
+}
+
+.ruled-line--small {
+	height: 4px;
+	margin: var(--space-1) 0 var(--space-2);
+}
+
+/* ---------------------------------------------------------------
+   Layout de página
+   ------------------------------------------------------------- */
+.page {
+	max-width: var(--content-width);
+	margin: 0 auto;
+	padding: var(--space-3) var(--space-2) var(--space-5);
+}
+
+/* Exceção de largura (home): o container em si fica mais largo,
+   mas .page-inner (hero, nav) volta pra largura de leitura padrão
+   — só o grid de áreas usa o espaço extra. */
+.page--wide {
+	max-width: var(--content-width-wide);
+}
+
+.page-inner {
+	max-width: var(--content-width);
+	margin: 0 auto;
+}
+
+.site-nav {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-family: var(--font-display);
+	font-size: 0.8rem;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	padding-top: var(--space-2);
+}
+
+.site-nav a {
+	text-decoration: none;
+	color: var(--color-text-muted);
+	border-bottom: 1px solid transparent;
+	transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.site-nav a:hover {
+	color: var(--color-text);
+	border-color: var(--color-text);
+}
+
+/* Toggle de idioma: sempre encostado na borda direita do nav. Com
+   justify-content: space-between no .site-nav, isso já acontece
+   quando há dois links (voltar + idioma), mas quando é o único
+   item (home) o space-between sozinho não empurra nada — daí o
+   margin-left: auto, que funciona nos dois casos. */
+.lang-switch {
+	margin-left: auto;
+}
+
+/* ---------------------------------------------------------------
+   Cabeçalho / hero
+   ------------------------------------------------------------- */
+.hero h1 {
+	font-family: var(--font-display);
+	font-size: clamp(1.75rem, 4vw, 2.5rem);
+	font-weight: 600;
+	letter-spacing: -0.01em;
+	margin: var(--space-3) 0 var(--space-1);
+}
+
+.hero .intro {
+	color: var(--color-text-muted);
+	font-size: 1.05rem;
+	max-width: 56ch;
+	margin: 0;
+}
+
+/* ---------------------------------------------------------------
+   Menu de salto entre áreas — só aparece no mobile, onde as três
+   áreas ficam empilhadas e podem exigir bastante rolagem. Fixo no
+   topo da viewport (sticky) enquanto o usuário rola a página. Em
+   telas largas, o grid de três colunas já deixa as áreas visíveis
+   sem precisar disso, então o menu some.
+
+   Fundo levemente mais escuro que o body (--color-bg-raised), pra
+   se destacar como uma faixa "elevada" fixa, em vez de se misturar
+   com o resto da página enquanto ela rola por baixo.
+
+   Cada link tem a mesma cor de acento do <h2> da área pra qual
+   aponta (data-area, igual ao card e ao heading da seção), então a
+   cor já entrega de cara pra qual área o link vai.
+   ------------------------------------------------------------- */
+.area-jump {
+	display: flex;
+	gap: var(--space-3);
+	overflow-x: auto;
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	background: var(--color-bg-raised);
+	padding: var(--space-1) var(--space-2);
+	margin: var(--space-3) calc(var(--space-2) * -1) 0;
+	border-bottom: 1px solid var(--color-hairline);
+	font-family: var(--font-display);
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+.area-jump a {
+	white-space: nowrap;
+	text-decoration: none;
+	border-bottom: 1px solid transparent;
+}
+
+.area-jump a[data-area='software'] {
+	color: var(--color-accent-software);
+}
+.area-jump a[data-area='article'] {
+	color: var(--color-accent-article);
+}
+.area-jump a[data-area='music'] {
+	color: var(--color-accent-music);
+}
+
+.area-jump a:hover {
+	border-color: currentColor;
+}
+
+@media (min-width: 900px) {
+	.area-jump {
+		display: none;
+	}
+}
+
+/* ---------------------------------------------------------------
+   Seções de área
+
+   Mobile: uma coluna empilhada (o espaçamento vem do gap de
+   .areas, não mais de margin-top em .area-section). Telas largas:
+   grid de três colunas, uma por área, pra deixar explícito de
+   cara que são três frentes de trabalho paralelas.
+   ------------------------------------------------------------- */
+.areas {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+	margin-top: var(--space-4);
+}
+
+@media (min-width: 900px) {
+	.areas {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		align-items: start;
+		gap: var(--space-3);
+	}
+
+	/* Dentro de uma coluna estreita do grid de áreas, dois cards
+	   lado a lado ficariam espremidos — os cards voltam a empilhar
+	   verticalmente dentro de cada área. */
+	.areas .card-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.area-section {
+	/* Compensa a altura do menu sticky ao saltar via âncora, pra o
+	   título da seção não ficar escondido atrás dele. */
+	scroll-margin-top: calc(var(--space-4) + var(--space-1));
+}
+
+.area-section h2 {
+	font-family: var(--font-display);
+	font-size: 0.8rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	margin: 0;
+}
+
+.area-section[data-area='software'] h2 {
+	color: var(--color-accent-software);
+}
+.area-section[data-area='article'] h2 {
+	color: var(--color-accent-article);
+}
+.area-section[data-area='music'] h2 {
+	color: var(--color-accent-music);
+}
+
+.card-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--space-2);
+}
+
+@media (min-width: 640px) {
+	.card-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+/* ---------------------------------------------------------------
+   Card de projeto
+
+   .card é uma coluna flex. Os links ficam com margin-top: auto para
+   grudar sempre no rodapé do card, a uma distância fixa da borda de
+   baixo — como os cards de uma mesma linha do grid esticam pra
+   mesma altura (comportamento padrão do grid), isso vale tanto para
+   descrições curtas (que sobram bastante espaço) quanto longas.
+   ------------------------------------------------------------- */
+.card {
+	background: var(--color-surface);
+	border: 1px solid var(--color-hairline);
+	border-left-width: 3px;
+	border-radius: 4px;
+	padding: var(--space-2);
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-1);
+}
+
+.card[data-area='software'] {
+	border-left-color: var(--color-accent-software);
+}
+.card[data-area='article'] {
+	border-left-color: var(--color-accent-article);
+}
+.card[data-area='music'] {
+	border-left-color: var(--color-accent-music);
+}
+
+.card .identity {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.7rem;
+}
+
+/* Selo de área: ícone empilhado sobre o rótulo, como um selo/tag
+   de categoria, e não mais um par ícone+texto na mesma linha.
+   Margem própria à direita e abaixo, além do gap de .identity, pra
+   dar mais respiro entre o selo e o título/descrição. */
+.card .area {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.2rem;
+	flex-shrink: 0;
+	margin: 0 0.4rem 0.6rem 0;
+	font-family: var(--font-display);
+	font-size: 0.62rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+.card[data-area='software'] .area {
+	color: var(--color-accent-software);
+}
+.card[data-area='article'] .area {
+	color: var(--color-accent-article);
+}
+.card[data-area='music'] .area {
+	color: var(--color-accent-music);
+}
+
+.card .area svg {
+	width: 26px;
+	height: 26px;
+	flex-shrink: 0;
+}
+
+.card h3 {
+	font-family: var(--font-body);
+	font-size: 1.05rem;
+	font-weight: 600;
+	margin: 0;
+	/* Distribui o texto entre as linhas de forma mais equilibrada
+	   quando o título quebra, em vez de deixar uma linha final
+	   murcha. Sem suporte, cai de volta pro wrap padrão. */
+	text-wrap: balance;
+}
+
+.card .short-description {
+	color: var(--color-text-muted);
+	font-size: 0.92rem;
+	margin: 0;
+}
+
+.card .technologies {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	font-family: var(--font-display);
+	font-size: 0.72rem;
+	color: var(--color-text-muted);
+}
+
+.card .technologies li::before {
+	content: '· ';
+}
+
+.card .technologies li:first-child::before {
+	content: '';
+}
+
+.card .links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.9rem;
+	margin-top: auto;
+	padding-top: var(--space-1);
+}
+
+.card .links a {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	font-size: 0.85rem;
+	text-decoration: none;
+	color: var(--color-text);
+	border-bottom: 1px solid var(--color-hairline);
+}
+
+.card .links a:hover {
+	border-color: var(--color-text);
+}
+
+/* ---------------------------------------------------------------
+   Página de artigo
+   ------------------------------------------------------------- */
+.article-body {
+	font-size: 1.05rem;
+	line-height: 1.7;
+}
+
+.article-body h1 {
+	font-family: var(--font-display);
+	font-size: clamp(1.5rem, 3.5vw, 2rem);
+	margin-bottom: var(--space-2);
+}
+
+.article-body p {
+	margin: 0 0 1.2em;
+}
+
+.article-body em {
+	color: var(--color-text-muted);
+}
+
+/* ---------------------------------------------------------------
+   404
+   ------------------------------------------------------------- */
+.not-found h1 {
+	font-family: var(--font-display);
+	font-size: 1.5rem;
+}
+
+.not-found hr {
+	border: none;
+	border-top: 1px solid var(--color-hairline);
+	margin: var(--space-3) 0;
+}
