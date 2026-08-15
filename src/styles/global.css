@@ -36,6 +36,37 @@
 	--content-width-wide: 1100px;
 }
 
+/* ---------------------------------------------------------------
+   Modo escuro — segue a preferência do sistema operacional
+   (prefers-color-scheme), sem toggle manual por enquanto. Mesmo
+   conjunto de variáveis do :root, só que redefinido; nenhum outro
+   seletor do arquivo precisa mudar porque tudo já consome essas
+   variáveis em vez de cor fixa.
+
+   Os três acentos de área ficam mais claros/saturados aqui do que
+   na versão clara — em fundo escuro, as mesmas cores originais
+   (pensadas pra contrastar com um fundo bem claro) perdem contraste
+   e legibilidade.
+   ------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-bg: #16171b;
+		--color-bg-raised: #202226;
+		--color-surface: #1c1d21;
+		--color-text: #e8e9e5;
+		--color-text-muted: #9a9b95;
+		--color-hairline: #2e2f33;
+
+		--color-accent-software: #8ea3db; /* índigo, clareado pra contraste em fundo escuro */
+		--color-accent-article: #cba36a; /* sépia, clareado */
+		--color-accent-music: #cd7482; /* bordô, clareado */
+	}
+
+	html {
+		color-scheme: dark;
+	}
+}
+
 /* Reset mínimo */
 *,
 *::before,
