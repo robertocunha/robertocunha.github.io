@@ -17,7 +17,7 @@ description:
     allowing chords and formatting to be worked on directly in the
     browser.
 
-area: music
+area: software
 
 technologies:
   - TypeScript
@@ -25,11 +25,11 @@ technologies:
 
 links:
   - type: demo
-    url: https://...
+    url: https://sigalacifra.web.app
   - type: repo
-    url: https://github.com/...
+    url: https://github.com/robertocunha/sigalacifra
   - type: screenshots
-    url: https://...
+    url: https://github.com/robertocunha/sigalacifra/raw/main/docs/images/tela-pagina-musica.png
 ---
 
 Aqui entraria o conteúdo mais detalhado do projeto.
