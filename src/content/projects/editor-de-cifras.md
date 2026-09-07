@@ -4,8 +4,12 @@ title:
   en: Siga La Cifra!
 
 shortDescription:
-  pt: Editor de letras de música cifradas.
-  en: A chord-sheet editor for song lyrics.
+  pt: >
+    Editor de letras de música cifradas, com documentação aberta do
+    processo de estudo e revisão crítica de código gerado por IA.
+  en: >
+    A chord-sheet editor for song lyrics, with open documentation of
+    the study and critical-review process for AI-generated code.
 
 description:
   pt: >
@@ -20,7 +24,7 @@ description:
 area: software
 
 technologies:
-  - TypeScript
+  - JavaScript
   - Firebase
 
 links:
@@ -30,6 +34,8 @@ links:
     url: https://github.com/robertocunha/sigalacifra
   - type: screenshots
     url: https://github.com/robertocunha/sigalacifra/raw/main/docs/images/tela-pagina-musica.png
+  - type: summary
+    url: https://github.com/robertocunha/sigalacifra/blob/main/docs/README.md
 ---
 
 Aqui entraria o conteúdo mais detalhado do projeto.
